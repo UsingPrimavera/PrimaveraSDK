@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <project name="PrimaveraSDK" basedir="." default="test">
+
+    <property name="version" value="1.8"/>
+    <property name="haltonfailure" value="no"/>
+
+    <property name="out" value="out"/>
+
+    <property name="production.src" value="src"/>
+    <property name="production.lib" value="lib"/>
+    <property name="production.classes" value="${out}/production/${ant.project.name}"/>
+
+    <property name="test.src" value="test"/>
+    <property name="test.lib" value="lib"/>
+    <property name="test.classes" value="${out}/test/${ant.project.name}"/>
+
+    <property name="reports.out" value="${out}/reports"/>
+    <property name="junit.out" value="${reports.out}/junit"/>
+
+    <path id="production.class.path">
+        <pathelement location="${production.classes}"/>
+        <fileset dir="${production.lib}">
+            <include name="**/*.jar"/>
+            <exclude name="**/junit*.jar"/>
+            <exclude name="**/hamcrest*.jar"/>
+        </fileset>
+    </path>
+
+    <path id="test.class.path">
+        <path refid="production.class.path"/>
+        <pathelement location="${test.classes}"/>
+        <fileset dir="${test.lib}">
+            <include name="**/junit*.jar"/>
+            <include name="**/hamcrest*.jar"/>
+        </fileset>
+    </path>
+
+
+    <available file="${out}" property="outputExists"/>
+
+    <target name="clean" description="remove all generated artifacts" if="outputExists">
+        <delete dir="${out}" includeEmptyDirs="true"/>
+        <delete dir="${reports.out}" includeEmptyDirs="true"/>
+    </target>
+
+    <target name="create" description="create the output directories" >
+        <mkdir dir="${production.classes}"/>
+        <mkdir dir="${test.classes}"/>
+        <mkdir dir="${junit.out}"/>
+        <mkdir dir="${reports.out}"/>
+    </target>
+
+    <target name="compile" description="compile all .java source files" depends="create">
+        <!-- Debug output
+                <property name="production.class.path" refid="production.class.path"/>
+                <echo message="${production.class.path}"/>
+        -->
+        <javac includeantruntime="false" srcdir="src" destdir="${out}/production/${ant.project.name}" debug="on" source="${version}">
+            <classpath refid="production.class.path"/>
+            <include name="**/*.java"/>
+            <exclude name="**/*Test.java"/>
+        </javac>
+        <javac includeantruntime="false" srcdir="${test.src}" destdir="${out}/test/${ant.project.name}" debug="on" source="${version}">
+            <classpath refid="test.class.path"/>
+            <include name="**/*Test.java"/>
+        </javac>
+    </target>
+
+    <target name="junit-test" description="run all junit tests" depends="compile">
+        <!-- Debug output
+                <property name="test.class.path" refid="test.class.path"/>
+                <echo message="${test.class.path}"/>
+        -->
+        <junit printsummary="yes" haltonfailure="${haltonfailure}">
+            <classpath refid="test.class.path"/>
+            <formatter type="xml"/>
+            <batchtest fork="yes" todir="${junit.out}">
+                <fileset dir="${test.src}">
+                    <include name="**/*Test.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+        <junitreport todir="${junit.out}">
+            <fileset dir="${junit.out}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report todir="${junit.out}" format="frames"/>
+        </junitreport>
+    </target>
+
+
+	<target name="test" depends="clean, create, junit-test" />
+
+
+</project>
