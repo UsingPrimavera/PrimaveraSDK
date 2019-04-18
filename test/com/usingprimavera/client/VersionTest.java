@@ -1,4 +1,4 @@
-package com.usingprimavera.client;
+package com.usingprimavera.p6;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;

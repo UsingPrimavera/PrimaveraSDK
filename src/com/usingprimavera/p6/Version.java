@@ -1,4 +1,4 @@
-package com.usingprimavera.client;
+package com.usingprimavera.p6;
 
 import java.lang.StringBuilder;
 
