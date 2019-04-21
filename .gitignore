@@ -1,4 +1,5 @@
 out/
 lib/
+*.properties
 # vim temporary files
 *.swp
