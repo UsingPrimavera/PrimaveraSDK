@@ -9,16 +9,18 @@ import java.util.Properties;
 
 public class Configuration {
 
+  private static Configuration _instance;
+
   private static String DEFAULT_CONFIGURATION_FILENAME = System.getProperty("user.dir") + File.separator + "PrimaveraSDK.properties";
 
   private Properties _props = null;
   private File _file = null;
 
-  public Configuration() {
+  private Configuration() {
     this(DEFAULT_CONFIGURATION_FILENAME);
   }
 
-  public Configuration(String filePathName) {
+  private Configuration(String filePathName) {
 
     _props = new Properties(createDefaultConfiguration());
 
@@ -33,6 +35,26 @@ public class Configuration {
     }
 
 
+  }
+
+  public synchronized static Configuration getInstance() {
+    if (_instance==null) {
+      _instance = new Configuration();
+    }
+
+    return _instance;
+  }
+
+  public synchronized static Configuration getInstance(String filePathName) {
+    if (_instance==null) {
+      _instance = new Configuration(filePathName);
+    }
+
+    return _instance;
+  }
+
+  public synchronized static void delete() {
+    _instance = null;
   }
 
   public String getFileName() {

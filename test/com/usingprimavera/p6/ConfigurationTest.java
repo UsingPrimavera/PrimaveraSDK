@@ -17,7 +17,8 @@ public class ConfigurationTest {
 	public void testLoadDefaultConfigurationFile() {
     String filename = "PrimaveraSDK.properties";
     createConfigurationFile(filename,createDefaultConfiguration());
-    Configuration config = new Configuration();
+		Configuration.delete();
+    Configuration config = Configuration.getInstance();
 		assertEquals(filename, config.getFileName());
     assertEquals(getDefaultPathname() + filename, config.getPathName());
     assertEquals("LOCAL_SERVICE", config.getP6SessionType());
@@ -34,7 +35,8 @@ public class ConfigurationTest {
 	public void testLoadSpecifiedConfigurationFile() {
     String filename = "MyOwnPrimaveraSDK.properties";
     createConfigurationFile(filename,createCustomConfiguration());
-    Configuration config = new Configuration(getDefaultPathname() + filename);
+		Configuration.delete();
+    Configuration config = Configuration.getInstance(getDefaultPathname() + filename);
 		assertEquals(filename, config.getFileName());
     assertEquals(getDefaultPathname() + filename, config.getPathName());
     assertEquals("STANDARD_RMI_SERVICE", config.getP6SessionType());
