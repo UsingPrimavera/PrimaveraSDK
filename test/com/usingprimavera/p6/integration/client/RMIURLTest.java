@@ -12,6 +12,6 @@ public class RMIURLTest {
 	@Test
 	public void testgetDefaultHost() {
     Configuration config = Configuration.getInstance();
-		assertNotNull(com.primavera.integration.client.RMIURL.getDefaultHost());
+		assertNotNull(RMIURL.getDefaultHost());
 	}
 }
