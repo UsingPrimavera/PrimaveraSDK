@@ -20,9 +20,7 @@
     <path id="production.class.path">
         <pathelement location="${production.classes}"/>
         <fileset dir="${production.lib}">
-            <include name="**/*.jar"/>
-            <exclude name="**/junit*.jar"/>
-            <exclude name="**/hamcrest*.jar"/>
+            <include name="p6/*.jar"/>
         </fileset>
     </path>
 
@@ -30,8 +28,8 @@
         <path refid="production.class.path"/>
         <pathelement location="${test.classes}"/>
         <fileset dir="${test.lib}">
-            <include name="**/junit*.jar"/>
-            <include name="**/hamcrest*.jar"/>
+            <include name="junit/*.jar"/>
+            <include name="p6/*.jar"/>
         </fileset>
     </path>
 
