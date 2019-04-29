@@ -16,11 +16,16 @@
 
     <property name="reports.out" value="${out}/reports"/>
     <property name="junit.out" value="${reports.out}/junit"/>
+    <property name="local.junit.out" value="${junit.out}/local"/>
+    <property name="rmi.junit.out" value="${junit.out}/rmi"/>
+    <property name="ws.junit.out" value="${junit.out}/ws"/>
 
     <path id="production.class.path">
         <pathelement location="${production.classes}"/>
         <fileset dir="${production.lib}">
-            <include name="p6/*.jar"/>
+            <include name="p6_local_api/*.jar"/>
+            <include name="p6_rmi_api/*.jar"/>
+            <include name="p6_ws_api/*.jar"/>
         </fileset>
     </path>
 
@@ -29,7 +34,6 @@
         <pathelement location="${test.classes}"/>
         <fileset dir="${test.lib}">
             <include name="junit/*.jar"/>
-            <include name="p6/*.jar"/>
         </fileset>
     </path>
 
@@ -44,8 +48,11 @@
     <target name="create" description="create the output directories" >
         <mkdir dir="${production.classes}"/>
         <mkdir dir="${test.classes}"/>
-        <mkdir dir="${junit.out}"/>
         <mkdir dir="${reports.out}"/>
+        <mkdir dir="${junit.out}"/>
+        <mkdir dir="${local.junit.out}"/>
+        <mkdir dir="${rmi.junit.out}"/>
+        <mkdir dir="${ws.junit.out}"/>
     </target>
 
     <target name="compile" description="compile all .java source files" depends="create">
@@ -64,7 +71,7 @@
         </javac>
     </target>
 
-    <target name="junit-test" description="run all junit tests" depends="compile">
+    <target name="junit-local" description="run all junit tests" depends="compile">
         <!-- Debug output
                 <property name="test.class.path" refid="test.class.path"/>
                 <echo message="${test.class.path}"/>
@@ -72,22 +79,75 @@
         <junit printsummary="yes" haltonfailure="${haltonfailure}">
             <classpath refid="test.class.path"/>
             <formatter type="xml"/>
-            <batchtest fork="yes" todir="${junit.out}">
+            <batchtest fork="yes" todir="${local.junit.out}">
                 <fileset dir="${test.src}">
                     <include name="**/*Test.java"/>
+                    <exclude name="**/*RmiTest.java"/>
+                    <exclude name="**/*WsTest.java"/>
                 </fileset>
             </batchtest>
         </junit>
-        <junitreport todir="${junit.out}">
-            <fileset dir="${junit.out}">
+        <junitreport todir="${local.junit.out}">
+            <fileset dir="${local.junit.out}">
                 <include name="TEST-*.xml"/>
             </fileset>
-            <report todir="${junit.out}" format="frames"/>
+            <report todir="${local.junit.out}" format="frames"/>
         </junitreport>
     </target>
 
+    <target name="junit-rmi" description="run all junit tests" depends="compile">
+        <!-- Debug output
+                <property name="test.class.path" refid="test.class.path"/>
+                <echo message="${test.class.path}"/>
+        -->
+        <junit printsummary="yes" haltonfailure="${haltonfailure}">
+            <classpath refid="test.class.path"/>
+            <formatter type="xml"/>
+            <batchtest fork="yes" todir="${rmi.junit.out}">
+                <fileset dir="${test.src}">
+                    <include name="**/*Test.java"/>
+                    <exclude name="**/*LocalTest.java"/>
+                    <exclude name="**/*WsTest.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+        <junitreport todir="${rmi.junit.out}">
+            <fileset dir="${rmi.junit.out}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report todir="${rmi.junit.out}" format="frames"/>
+        </junitreport>
+    </target>
 
-	<target name="test" depends="clean, create, junit-test" />
+    <target name="junit-ws" description="run all junit tests" depends="compile">
+        <!-- Debug output
+                <property name="test.class.path" refid="test.class.path"/>
+                <echo message="${test.class.path}"/>
+        -->
+        <junit printsummary="yes" haltonfailure="${haltonfailure}">
+            <classpath refid="test.class.path"/>
+            <formatter type="xml"/>
+            <batchtest fork="yes" todir="${ws.junit.out}">
+                <fileset dir="${test.src}">
+                    <include name="**/*Test.java"/>
+                    <exclude name="**/*RmiTest.java"/>
+                    <exclude name="**/*LocalTest.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+        <junitreport todir="${ws.junit.out}">
+            <fileset dir="${ws.junit.out}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report todir="${ws.junit.out}" format="frames"/>
+        </junitreport>
+    </target>
+
+    <target name="junit-test" description="run all junit tests" depends="compile, junit-rmi, junit-local, junit-ws" />
+
+
+	<target name="test" depends="clean, create, junit-local" />
+  <target name="test-all" depends="clean, create, junit-test" />
 
 
 </project>
