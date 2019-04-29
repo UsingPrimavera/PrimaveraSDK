@@ -8,7 +8,8 @@ import org.junit.Test;
 import com.usingprimavera.p6.Configuration;
 
 
-public class RMIURLRmiTest {
+public class RMIURLWsTest {
+
 
 	@Test
 	public void testgetDefaultHost() {

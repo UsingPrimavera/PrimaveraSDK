@@ -8,7 +8,7 @@ import org.junit.Test;
 import com.usingprimavera.p6.Configuration;
 
 
-public class RMIURLRmiTest {
+public class RMIURLLocalTest {
 
 	@Test
 	public void testgetDefaultHost() {
@@ -48,4 +48,22 @@ public class RMIURLRmiTest {
 		assertEquals("rmi://" + sHost + ":" + iPort + "/rmi/RemoteSession",RMIURL.getRmiUrl(RMIURL.STANDARD_RMI_SERVICE,sHost, iPort));
 	}
 
+	@Test
+	public void testsettRmiUrl() {
+
+		String sHost = "www.UsingPrimavera.com";
+		int iPort = 9097;
+    String sHostAndPort = sHost + ":" + iPort;
+		RMIURL.setDefaultHost(sHost);
+		RMIURL.setDefaultPort(iPort);
+
+		assertEquals("rmi://" + sHostAndPort + "/rmi/RemoteSession",RMIURL.getRmiUrl());
+		assertEquals("rmi://" + sHostAndPort + "/rmi/Compression/RemoteSession",RMIURL.getRmiUrl(RMIURL.COMPRESSION_RMI_SERVICE));
+
+    assertNull(RMIURL.getRmiUrl(RMIURL.LOCAL_SERVICE));
+
+		assertEquals("rmi://" + sHostAndPort + "/rmi/SSL/RemoteSession",RMIURL.getRmiUrl(RMIURL.SSL_RMI_SERVICE));
+		assertEquals("rmi://" + sHostAndPort + "/rmi/RemoteSession",RMIURL.getRmiUrl(RMIURL.STANDARD_RMI_SERVICE));
+
+	}
 }
